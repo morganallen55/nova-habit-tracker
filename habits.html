@@ -1,0 +1,72 @@
+<!-- habits.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Habit Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <ul>
+            <li><a href="journal.html">Journal</a></li>
+            <li><a href="stats.html">Stats</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h1>Nova Habit Tracker</h1>
+
+        <!-- Face Recognition Section -->
+        <div id="consentMessage" class="hidden">
+            <p>Please consent to allow camera access for face recognition.</p>
+            <button id="consentBtn">Grant Consent</button>
+        </div>
+
+        <!-- Video Stream for Face Recognition -->
+        <video id="video" width="320" height="240" style="display: none;"></video>
+        <p id="face-status"></p>
+
+        <!-- Habit Logging Section -->
+        <button id="add-habit" class="main-button">Add Habit</button>
+
+        <div id="habit-inputs" class="hidden form-container">
+            <h2>Log:</h2>
+            <input type="text" id="habit-name" placeholder="Habit Name">
+            <textarea id="habit-description" placeholder="Description"></textarea>
+
+            <p>Select Difficulty:</p>
+            <div class="difficulty-container">
+                <label><input type="radio" name="habit-difficulty" value="1"> 1</label>
+                <label><input type="radio" name="habit-difficulty" value="2"> 2</label>
+                <label><input type="radio" name="habit-difficulty" value="3"> 3</label>
+                <label><input type="radio" name="habit-difficulty" value="4"> 4</label>
+                <label><input type="radio" name="habit-difficulty" value="5"> 5</label>
+            </div>
+
+            <button id="save-habit" class="save-button">Save Habit</button>
+        </div>
+
+        <!-- Habit List -->
+        <h2>Habits</h2>
+        <ul id="habit-list" class="habit-list"></ul>
+    </div>
+
+    <!-- AI Chatbot Section -->
+    <div id="chatbot-container" class="chatbot">
+        <h3>💬 AI Habit Assistant</h3>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Ask me anything..." />
+        <button id="chatbot-send">Send</button>
+    </div>
+
+    <!-- Toggle Button (can go anywhere, but usually near the bottom or top of the page) -->
+    <button id="chatbot-toggle" class="toggle-button">Toggle Chatbot</button>
+
+    <script type="module" src="habits.js"></script>
+</body>
+</html>
