@@ -1,6 +1,6 @@
 // ✅ Import Firebase Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // ✅ Firebase Configuration
 const firebaseConfig = {
@@ -23,34 +23,36 @@ const journalForm = document.getElementById("journal-form");
 const entryText = document.getElementById("entry-text");
 const entriesList = document.getElementById("entries-list");
 
-// ✅ Save a new journal entry (No authentication required)
+// ✅ Save a new journal entry
 const saveJournalEntry = async (text) => {
     try {
         await addDoc(collection(db, "journalEntries"), {
             text,
-            timestamp: new Date()
+            timestamp: serverTimestamp() // ✅ Uses Firestore's server timestamp
         });
 
         console.log("✅ Journal entry saved!");
-        await loadJournalEntries(); // Refresh entries after saving
+        entryText.value = ""; // ✅ Clear textarea after saving
+        await loadJournalEntries(); // ✅ Refresh entries after saving
     } catch (error) {
         console.error("❌ Error saving journal entry:", error);
+        alert("Failed to save journal entry.");
     }
 };
 
-// ✅ Load journal entries (No authentication required)
+// ✅ Load journal entries
 async function loadJournalEntries() {
     try {
-        entriesList.innerHTML = ""; // Clear list
+        entriesList.innerHTML = ""; // ✅ Clear previous entries
         const q = query(collection(db, "journalEntries"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach((doc) => {
             const entry = doc.data();
             const li = document.createElement("li");
-            const timestamp = entry.timestamp?.toDate
-                ? new Date(entry.timestamp.toDate()).toLocaleString()
-                : "No Timestamp";
+
+            // ✅ Ensure timestamp exists and format it
+            const timestamp = entry.timestamp ? new Date(entry.timestamp.seconds * 1000).toLocaleString() : "No Timestamp";
 
             li.textContent = `${entry.text} - ${timestamp}`;
             entriesList.appendChild(li);
@@ -62,6 +64,17 @@ async function loadJournalEntries() {
         alert("Failed to load journal entries.");
     }
 }
+
+// ✅ Form submission event listener
+journalForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = entryText.value.trim();
+    if (text) {
+        await saveJournalEntry(text);
+    } else {
+        alert("Please enter some text before saving.");
+    }
+});
 
 // ✅ Load entries when page loads
 document.addEventListener("DOMContentLoaded", loadJournalEntries);
