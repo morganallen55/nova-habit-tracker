@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal - Nova Habit Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+  <nav aria-label="Primary Navigation">
+    <ul>
+      <li><a href="index.html">Habits</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="stats.html">Stats</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main>
+  <h1>Journal</h1>
+
+  <section id="journal-entry">
+    <h2>New Journal Entry</h2>
+    <form id="journal-form">
+      <label for="entry-text">Write your thoughts here:</label>
+      <textarea id="entry-text" placeholder="Write your thoughts here..." required></textarea>
+      <button type="submit">Save Entry</button>
+    </form>
+  </section>
+
+  <section id="journal-entries">
+    <h2>Previous Entries</h2>
+    <ul id="entries-list">
+      <!-- Journal entries dynamically added here -->
+    </ul>
+  </section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+<script src="journal.js"></script>
+
+</body>
+</html>

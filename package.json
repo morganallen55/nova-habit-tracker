@@ -1,0 +1,12 @@
+{
+  "name": "nova-habit-tracker",
+  "version": "1.0.0",
+  "description": "Nova Habit Tracker helps users build and maintain habits with AI assistance and secure authentication.",
+  "main": "firebase.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
