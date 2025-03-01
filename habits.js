@@ -190,6 +190,9 @@ chatbotSend.addEventListener("click", sendMessage);
 chatbotInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
 });
+document.addEventListener("DOMContentLoaded", function () {
+    setupFaceRecognition();
+});
 
 // **Google Cloud Vision API Face Authentication**
 async function detectFaceGoogleCloud(imageData) {
@@ -212,7 +215,7 @@ async function detectFaceGoogleCloud(imageData) {
         });
 
         const data = await response.json();
-        const faceAnnotations = data.responses[0].faceAnnotations;
+        const faceAnnotations = data.responses[0]?.faceAnnotations;
         return faceAnnotations && faceAnnotations.length > 0;
     } catch (error) {
         console.error("Error with Vision API:", error);
@@ -224,42 +227,34 @@ async function detectFaceGoogleCloud(imageData) {
 async function setupFaceRecognition() {
     const video = document.getElementById("video");
     const consentMessage = document.getElementById("consentMessage");
+    const consentBtn = document.getElementById("consentBtn");
 
-    if (localStorage.getItem('hasGivenConsent') === 'true') {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        video.style.display = "block";
+    if (!video || !consentMessage || !consentBtn) {
+        console.error("⚠️ Required elements not found. Check HTML structure.");
+        return;
+    }
 
-        video.onloadedmetadata = () => {
-            video.play();
-            captureImage(video);
-        };
-    } else {
-        const faceElement = document.getElementById("some-element");
-        if (faceElement) {
-            faceElement.style.display = "block";
-        } else {
-            console.error("⚠️ Face recognition element not found. Make sure its ID is correct and exists in the HTML.");
-        }
-        
-        document.getElementById("consentBtn").addEventListener("click", async () => {
+    consentMessage.style.display = "block"; // Always show the consent message on page load
+
+    consentBtn.addEventListener("click", async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+            // Store user consent
             localStorage.setItem('hasGivenConsent', 'true');
             consentMessage.style.display = "none";
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                video.style.display = "block";
-                video.onloadedmetadata = () => {
-                    video.play();
-                    captureImage(video);
-                };
-            } catch (error) {
-                console.error("Error accessing webcam:", error);
-                alert("Failed to access camera.");
-            }
-        });
-    }
+            video.srcObject = stream;
+            video.style.display = "block";
+            video.onloadedmetadata = () => {
+                video.play();
+                captureImage(video); // Start face recognition ONLY after consent
+            };
+        } catch (error) {
+            console.error("Error accessing webcam:", error);
+            alert("Failed to access camera.");
+        }
+    });
 }
 
 // Capture Image & Send to Google Vision API
@@ -275,14 +270,15 @@ async function captureImage(video) {
     const imageData = canvas.toDataURL("image/jpeg").split(",")[1];
     const faceDetected = await detectFaceGoogleCloud(imageData);
 
-    document.getElementById("face-status").textContent = faceDetected
-        ? " Face detected!"
-        : "❌ No face detected. Try again.";
+    const faceStatus = document.getElementById("face-status");
+    if (faceStatus) {
+        faceStatus.textContent = faceDetected ? " Face detected!" : " No face detected. Try again.";
+    }
 
     if (faceDetected) {
-        clearInterval(detectionInterval);
-        showLoginSuccess(); // Trigger login success
-        stopVideoStream(video); // Hide the video stream and stop webcam
+        clearTimeout(detectionInterval);
+        showLoginSuccess();
+        stopVideoStream(video);
     } else {
         detectionInterval = setTimeout(() => captureImage(video), 2000);
     }
@@ -299,10 +295,10 @@ function showLoginSuccess() {
 
 // Function to stop the video stream and hide the camera
 function stopVideoStream(video) {
-    const stream = video.srcObject;
-    const tracks = stream.getTracks();
-    tracks.forEach(track => track.stop());
+    if (video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+    }
     video.style.display = "none";
 }
-
-setupFaceRecognition();
