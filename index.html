@@ -19,17 +19,18 @@
 <!-- Main Container -->
 <div class="container">
   <h1>Nova Habit Tracker</h1>
-  
-  <div id="consentMessage">
+ <!-- Consent Message -->
+ <div id="consentMessage" style="display: none;">
     <p>We need your consent to use your camera for face recognition.</p>
     <button id="consentBtn">Give Consent</button>
-  </div>
-  
-  <!-- Face Recognition Section -->
-  <video id="video" width="320" height="240" style="display: none;" aria-label="Live face recognition camera feed">
+</div>
+
+<!-- Face Recognition Section -->
+<video id="video" width="320" height="240" style="display: none;" aria-label="Live face recognition camera feed">
     Your browser does not support the video tag.
-  </video>
-  <p id="face-status"></p>
+</video>
+<p id="face-status"></p>
+</div>
 
   <!-- Habit Logging Section -->
   <button id="add-habit" class="main-button" aria-label="Add a new habit">
