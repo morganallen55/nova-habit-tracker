@@ -32,6 +32,7 @@ const chatbotContainer = document.getElementById("chatbot-container");
 const chatbotMessages = document.getElementById("chatbot-messages");
 const chatbotInput = document.getElementById("chatbot-input");
 const chatbotSend = document.getElementById("chatbot-send");
+const chatbotToggle = document.getElementById("chatbot-toggle");
 
 // ✅ Show input form when 'Add Habit' is clicked
 addHabitButton.addEventListener("click", () => {
@@ -129,6 +130,7 @@ window.deleteHabit = async function (habitId) {
     }
 };
 
+
 // ✅ Chatbot API Integration
 async function sendMessage() {  
     const userMessage = chatbotInput.value || "Hello, how are you?";
@@ -178,10 +180,15 @@ chatbotInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") sendMessage();
 });
 
-const toggleChatbot = document.getElementById("toggleChatbot");
+// Toggle Chatbot Visibility
+chatbotToggle.addEventListener("click", () => {
+    chatbotContainer.classList.toggle("hidden");
+});
 
-document.getElementById("chatbot-toggle").addEventListener("click", function() {
-    document.getElementById("chatbot-container").classList.toggle("visible");
+// Handle Sending Messages
+chatbotSend.addEventListener("click", sendMessage);
+chatbotInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
 });
 
 // **Google Cloud Vision API Face Authentication**
