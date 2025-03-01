@@ -234,32 +234,27 @@ async function setupFaceRecognition() {
         return;
     }
 
-    if (localStorage.getItem('hasGivenConsent') === 'true') {
-        startFaceRecognition(video);
-    } else {
-        consentMessage.style.display = "block";
-        consentBtn.addEventListener("click", async () => {
+    consentMessage.style.display = "block"; // Always show the consent message on page load
+
+    consentBtn.addEventListener("click", async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+            // Store user consent
             localStorage.setItem('hasGivenConsent', 'true');
             consentMessage.style.display = "none";
-            startFaceRecognition(video);
-        });
-    }
-}
 
-async function startFaceRecognition(video) {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        video.style.display = "block";
-
-        video.onloadedmetadata = () => {
-            video.play();
-            captureImage(video);
-        };
-    } catch (error) {
-        console.error("Error accessing webcam:", error);
-        alert("Failed to access camera.");
-    }
+            video.srcObject = stream;
+            video.style.display = "block";
+            video.onloadedmetadata = () => {
+                video.play();
+                captureImage(video); // Start face recognition ONLY after consent
+            };
+        } catch (error) {
+            console.error("Error accessing webcam:", error);
+            alert("Failed to access camera.");
+        }
+    });
 }
 
 // Capture Image & Send to Google Vision API
@@ -277,7 +272,7 @@ async function captureImage(video) {
 
     const faceStatus = document.getElementById("face-status");
     if (faceStatus) {
-        faceStatus.textContent = faceDetected ? "✅ Face detected!" : "❌ No face detected. Try again.";
+        faceStatus.textContent = faceDetected ? " Face detected!" : " No face detected. Try again.";
     }
 
     if (faceDetected) {
