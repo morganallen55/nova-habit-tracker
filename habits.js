@@ -235,8 +235,13 @@ async function setupFaceRecognition() {
             captureImage(video);
         };
     } else {
-        consentMessage.style.display = "block";
-
+        const faceElement = document.getElementById("some-element");
+        if (faceElement) {
+            faceElement.style.display = "block";
+        } else {
+            console.error("⚠️ Face recognition element not found. Make sure its ID is correct and exists in the HTML.");
+        }
+        
         document.getElementById("consentBtn").addEventListener("click", async () => {
             localStorage.setItem('hasGivenConsent', 'true');
             consentMessage.style.display = "none";
